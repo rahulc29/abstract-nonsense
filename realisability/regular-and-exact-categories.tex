@@ -1,0 +1,138 @@
+\documentclass{article}
+%
+\newcommand{\cat}[1]{\mathsf{#1}}
+\newcommand{\univ}[1]{\mathcal{#1}}
+\newcommand{\path}{\equiv}
+\newcommand{\id}[1]{\mathsf{#1}}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usepackage{quiver}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\usepackage{xcolor}
+\usepackage{natbib}
+\bibliographystyle{unsrtnat}
+
+% From CAN package "orcidlink"
+\usepackage{scalerel}
+\usepackage{tikz}
+\usetikzlibrary{svg.path}
+\definecolor{orcidlogocol}{HTML}{A6CE39}
+\tikzset{
+  orcidlogo/.pic={
+    \fill[orcidlogocol] svg{M256,128c0,70.7-57.3,128-128,128C57.3,256,0,198.7,0,128C0,57.3,57.3,0,128,0C198.7,0,256,57.3,256,128z};
+    \fill[white] svg{M86.3,186.2H70.9V79.1h15.4v48.4V186.2z}
+                 svg{M108.9,79.1h41.6c39.6,0,57,28.3,57,53.6c0,27.5-21.5,53.6-56.8,53.6h-41.8V79.1z M124.3,172.4h24.5c34.9,0,42.9-26.5,42.9-39.7c0-21.5-13.7-39.7-43.7-39.7h-23.7V172.4z}
+                 svg{M88.7,56.8c0,5.5-4.5,10.1-10.1,10.1c-5.6,0-10.1-4.6-10.1-10.1c0-5.6,4.5-10.1,10.1-10.1C84.2,46.7,88.7,51.3,88.7,56.8z};
+  }
+}
+
+\newcommand\orcidicon[1]{\href{https://orcid.org/#1}{\mbox{\scalerel*{
+\begin{tikzpicture}[yscale=-1,transform shape]
+\pic{orcidlogo};
+\end{tikzpicture}
+}{|}}}}
+% end orcidlink
+\usepackage{hyperref}
+% notation 
+% end notationa
+\begin{document}
+\title{Regular and Exact Categories in Realisability}
+\date{\today}
+\author{Rahul Chhabra \orcidicon{0009-0007-7917-6461}\\
+{Indian Institute of Information Technology\\}}
+\maketitle
+\begin{abstract}
+    These notes are an exposition of internal (equivalence) relations, kernel pairs, regular epis, regular categories, effectiveness of internal relations, 
+    exact categories, exact functors and exact completion of a regular category. All of these ideas are essential to the construction of realisability topoi. The category of assemblies over a 
+    combinatory algebra $A$, $\cat{Asm}(A)$ is a regular category and the exact completion of $\cat{Asm}(A)$ is exactly the realisability topos over $A$, $\cat{RT}(A)$.
+\end{abstract}
+
+\section{Introduction}
+
+TODO : Write proper introduction.
+
+\section{Regular Categories}
+
+\subsection{Kernel Pairs and the Image of a Function}
+
+\subsubsection{Intution and Motivation}
+
+The \textbf{image} of a map $f : A \to B$ is defined as 
+
+\begin{equation*}
+    \id{Im}(f) :\equiv \mathop{\Sigma}\limits_{y : B}^{} \mathop{\exists} \limits_{x : A}^{} f(x) = y 
+\end{equation*}. 
+
+In words, this is the total space of all $y : B$ such that there merely exists an $x : A$ for which we can witness $f x \path y$. 
+Notice that the usage of mere existence means that even if $A$ and $B$ are arbitrary higher groupoids - whether or not a $y : B$ is in the image of $f$ is a \emph{property} and \emph{not structure}.
+
+Notice how the definition suggests that the image should be a \emph{subobject} of the codomain. 
+In the HoTT context, we must instead settle for saying that the image \emph{embeds into} the codomain. For a proof, see \citep{The_Agda_Community_Cubical_Agda_Library_2023}. 
+The notion of embedding behaves the same as injections on the level of sets but is better behaved at higher levels. 
+
+The most trivial inhabitants of the image are obtained if you already have an $x : A$. 
+
+\begin{equation*}
+    \id{inc}(x) :\equiv \; \mid (f (x) , x , \id{refl}(x)) \mid 
+\end{equation*}
+
+Let us take an illustrative example. Let $f : A \to B$ and $x_1 \; x_2 : A$ such that $p : f \; x_1 = f \; x_2$. 
+We shall now prove that $\id{inc}(x_1) = \id{inc}(x_2)$.
+
+\begin{lemma}
+    \begin{equation*}
+        \prod_{f : A \to B}^{} \prod_{x_1 \; x_2 : A}^{} \; \prod_{p : f x_1 \equiv f x_2} \; \id{inc}(x_1) = \id{inc}(x_2)    
+    \end{equation*}
+    
+\end{lemma}
+
+\begin{proof}
+    We intend to construct a path between two inhabitants of a $\sum$ type. 
+    Recall that two dependent pairs $(a, p_a)$ and $(b,p_b)$ have a path between them if there is a path between the independent components $j : a \equiv b$ and a path between the dependent components \emph{over} $j$. 
+
+    In our case, the dependent component is a property, so it suffices to have a path between the independent components, which is given by $p$.
+\end{proof}
+
+Thus we present an important insight - inside the image of a function, it is not possible to distinguish between points that have the same output on the function.
+
+\subsubsection{Kernel Pairs and Coequalisers}
+
+Let us start by asking - what categorical structure could capture the intuition that it is not possible to distinguish between two kinds of points. 
+
+A good candidate would be coequalisers. 
+
+Recall that for a pair of arrows $f \; g : A \to B$ their coequaliser is the arrow $\id{coeq} : B \to C$ to an object $C$ such that $\id{coeq} \circ f = \id{coeq} \circ g$ and $C$ and $\id{coeq}$ are \emph{universal} so that if $q : B \to D$ is another arrow such that $q \circ f = q \circ g$ then $q$ factorises through $\id{coeq}$ uniquely. 
+
+% https://q.uiver.app/#q=WzAsNCxbMCwwLCJBIl0sWzIsMCwiQiJdLFszLDAsIkMiXSxbMywxLCJEIl0sWzAsMSwiZiIsMCx7Im9mZnNldCI6LTJ9XSxbMCwxLCJnIiwyLHsib2Zmc2V0IjoyfV0sWzEsMiwiY29lcSJdLFsxLDMsInEiXSxbMiwzLCJcXGV4aXN0cyEiLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XV0=
+\[\begin{tikzcd}
+	A && B & C \\
+	&&& D
+	\arrow["f", shift left=2, from=1-1, to=1-3]
+	\arrow["g"', shift right=2, from=1-1, to=1-3]
+	\arrow["coeq", from=1-3, to=1-4]
+	\arrow["q", from=1-3, to=2-4]
+	\arrow["{\exists!}"{description}, dashed, from=1-4, to=2-4]
+\end{tikzcd}\]
+
+Notice that "inside" the coequaliser $f$ and $g$ are indistinguishable. We wish to achieve something similar, except we would have pairs $(x_1,x_2)$ with $f(x_1) = f(x_2)$.
+
+Firstly, we need to sort out the pair situation. This can be done using pullbacks. 
+
+Consider the pullback of $f$ along $f$, that is, consider the following pullback square :
+
+% https://q.uiver.app/#q=WzAsNCxbMSwwLCJBIl0sWzAsMSwiQSJdLFsxLDEsIkIiXSxbMCwwLCJBXFx0aW1lc19CQSJdLFsxLDIsImYiXSxbMCwyLCJmIiwyXSxbMywwLCJcXHBpXzIiLDJdLFszLDEsIlxccGlfMSJdXQ==
+\[\begin{tikzcd}
+	{A\times_BA} & A \\
+	A & B
+	\arrow["f", from=2-1, to=2-2]
+	\arrow["f"', from=1-2, to=2-2]
+	\arrow["{\pi_2}"', from=1-1, to=1-2]
+	\arrow["{\pi_1}", from=1-1, to=2-1]
+\end{tikzcd}\].
+
+\bibliography{realisability}
+
+\end{document}
