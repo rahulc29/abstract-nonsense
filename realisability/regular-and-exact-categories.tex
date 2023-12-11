@@ -10,10 +10,14 @@
 \usepackage{tikz}
 \usepackage{quiver}
 \newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}
+\newtheorem{prop}[theorem]{Proposi{t}ion}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{plain}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{defn}[theorem]{Def{i}ni{t}ion}
 \usepackage{xcolor}
 \usepackage{natbib}
-\bibliographystyle{unsrtnat}
 
 % From CAN package "orcidlink"
 \usepackage{scalerel}
@@ -106,6 +110,7 @@ A good candidate would be coequalisers.
 
 Recall that for a pair of arrows $f \; g : A \to B$ their coequaliser is the arrow $\id{coeq} : B \to C$ to an object $C$ such that $\id{coeq} \circ f = \id{coeq} \circ g$ and $C$ and $\id{coeq}$ are \emph{universal} so that if $q : B \to D$ is another arrow such that $q \circ f = q \circ g$ then $q$ factorises through $\id{coeq}$ uniquely. 
 
+
 % https://q.uiver.app/#q=WzAsNCxbMCwwLCJBIl0sWzIsMCwiQiJdLFszLDAsIkMiXSxbMywxLCJEIl0sWzAsMSwiZiIsMCx7Im9mZnNldCI6LTJ9XSxbMCwxLCJnIiwyLHsib2Zmc2V0IjoyfV0sWzEsMiwiY29lcSJdLFsxLDMsInEiXSxbMiwzLCJcXGV4aXN0cyEiLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XV0=
 \[\begin{tikzcd}
 	A && B & C \\
@@ -133,6 +138,30 @@ Consider the pullback of $f$ along $f$, that is, consider the following pullback
 	\arrow["{\pi_1}", from=1-1, to=2-1]
 \end{tikzcd}\].
 
+We call $\pi_1$ and $\pi_2$ the \textbf{kernel pairs} of $f$. 
+
+What would the coequaliser of the kernel pairs look like? 
+We would have an object such that "inside" the object one cannot distinguish between $x_1$ and $x_2$ if $f(x_1) = f(x_2)$. 
+
+This is exactly we set out to achieve!
+
+\subsection{Regular Categories}
+
+We are now in a position to define regular categories. We simply abstract out all of these observations.
+
+\begin{defn}
+    A \textbf{regular category} \citep{borceux_1994} is a category with :
+    \begin{enumerate}
+        \item All finite limits 
+        \item Kernel pairs of all morphisms
+        \item Coequalisers of all kernel pairs 
+        \item Stability of regular epics under pullback
+    \end{enumerate}
+\end{defn}
+
+I have not been able to intuit why the last condition (stability of regular epics under pullback) is necessary, but it is likely either a coherence condition (to exclude pathological models) or has to do with the many things we would like to do with regular categories, such as interpret regular logic and construct the allegory of relations.
+
+\bibliographystyle{plainnat}
 \bibliography{realisability}
 
 \end{document}
