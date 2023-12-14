@@ -4,6 +4,7 @@
 \newcommand{\univ}[1]{\mathcal{#1}}
 \newcommand{\path}{\equiv}
 \newcommand{\id}[1]{\mathsf{#1}}
+\newcommand{\realizes}[3]{#1 \Vdash_{#3} #2}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -160,6 +161,36 @@ We are now in a position to define regular categories. We simply abstract out al
 \end{defn}
 
 I have not been able to intuit why the last condition (stability of regular epics under pullback) is necessary, but it is likely either a coherence condition (to exclude pathological models) or has to do with the many things we would like to do with regular categories, such as interpret regular logic and construct the allegory of relations.
+
+\section{$\mathsf{Asm}$ is regular}
+\label{sec:asm-regular}
+
+Let us proceed to prove that the category of assemblies is regular. Throughout this section, assume that $A : \mathcal{U}$ is the underlying set of an arbitrary total combinatory algebra and $\mathcal{V} \; \mathcal{W}$ are arbitrary universes.
+
+\begin{defn}
+  An \textbf{assembly} over a set $X : \mathcal{V}$ consists of a relation $\Vdash : A \to X \to \mathcal{W}$ that is proposition valued along with a witness of the surjectivity of $\Vdash$ so that,
+  $\forall (x : X) \; \exists (a : A) \; \realizes{a}{x}{X}$
+  \end{enumerate}
+\end{defn}
+
+Immediately we see that the space of all assemblies is a set.
+
+Morphisms between assemblies are defined as follows.
+
+\begin{defn}
+  An \textbf{assembly morphism} $X \to Y$ is a map $f$ from the underlying set of $X$ to the underlying set of $Y$ that is \textbf{tracked}, we should merely have a tracker $r$ such that
+  $\forall (x : X) (x_r : A) \to \realizes{x_r}{x}{X} \to \realizes{r \; x_r}{f(x)}{Y}$.
+\end{defn}
+
+It is useful to have a characterisation of the path space of assembly morphisms. The following
+lemma is trivial but incredibly useful.
+
+\begin{lemma}
+  Given assemblies $X$ and $Y$ and assembly morphisms $f \; g : X \to Y$ such that $\forall (x : X)\; f(x) = g(x)$ then $f = g$.
+\end{lemma}
+\begin{proof}
+  Trivial by the definition of assembly morphism and function extensionality.
+\end{proof}
 
 \bibliographystyle{plainnat}
 \bibliography{realisability}
